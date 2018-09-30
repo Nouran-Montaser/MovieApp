@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <item
+        android:orderInCategory="1"
+        android:id="@+id/Top_Rated"
+        android:visible="true"
+        android:title="Top Rated" />
+
+    <item
+        android:orderInCategory="2"
+        android:id="@+id/Most_Popular"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        android:visible="true"
+        android:title="Most Popular" />
+
+
+</menu>
