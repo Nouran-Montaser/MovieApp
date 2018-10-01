@@ -27,15 +27,19 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MainActivity extends AppCompatActivity {
 
+    @BindView(R.id.recycler_view) RecyclerView movieRecyclerView;
 
     private static final String MY_PREFS_NAME = "MyPrefsFile";
     private static final int SETTINGS_RESULT = 9999;
     private GridLayoutManager gridLayoutManager;
     private ArrayList<Movie> details;
     private MovieAdapter movieAdapter;
-    private RecyclerView movieRecyclerView;
+//    private RecyclerView movieRecyclerView;
     private int NUM_OF_COLUMNS = 2;
     private final String BASE_URL = "https://api.themoviedb.org/3/";
     private final String TAG = MainActivity.class.getName();
@@ -46,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ButterKnife.bind(this);
 
         initializer();
 
@@ -59,15 +65,14 @@ public class MainActivity extends AppCompatActivity {
         String sortBy = sharedPrefs.getString("SortBY", null);
         if (sortBy != null) {
             if (sortBy.equals(getString(R.string.top_rated)))
-                new MovieAppTask().execute(BASE_URL + "movie/popular?api_key=214cc6f08673d0af40d2a203b2c32143&language=en-US&page=1");
-            else if (sortBy.equals(getString(R.string.most_popular)))
                 new MovieAppTask().execute(BASE_URL + "movie/top_rated?api_key=214cc6f08673d0af40d2a203b2c32143&language=en-US&page=1");
+            else if (sortBy.equals(getString(R.string.most_popular)))
+                new MovieAppTask().execute(BASE_URL + "movie/popular?api_key=214cc6f08673d0af40d2a203b2c32143&language=en-US&page=1");
         } else
             new MovieAppTask().execute(BASE_URL + "movie/now_playing?api_key=214cc6f08673d0af40d2a203b2c32143&language=en-US&page=1");
     }
 
     private void initializer() {
-        movieRecyclerView = findViewById(R.id.recycler_view);
         details = new ArrayList<>();
         gridLayoutManager = new GridLayoutManager(MainActivity.this, NUM_OF_COLUMNS);
         movieRecyclerView.setLayoutManager(gridLayoutManager);

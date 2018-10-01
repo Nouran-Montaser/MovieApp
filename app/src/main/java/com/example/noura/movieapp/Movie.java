@@ -1,6 +1,11 @@
 package com.example.noura.movieapp;
 
-public class Movie {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Movie
+//        implements Parcelable
+{
 
     public static final String baseImageUrl = "http://image.tmdb.org/t/p/w185/";
 
@@ -89,6 +94,35 @@ public class Movie {
     public void setPosterPath(String posterPath) {
         this.posterPath = posterPath;
     }
+
+//    @Override
+//    public int describeContents() {
+//        return 0;
+//    }
+//
+//    @Override
+//    public void writeToParcel(Parcel dest, int flags) {
+//        dest.writeString(Name);
+//        dest.writeString(posterPath);
+//        dest.writeString(Title);
+//        dest.writeString(backdrop_path);
+//        dest.writeString(OverView);
+//        dest.writeString(vote_average);
+//        dest.writeString(Date);
+//        dest.writeInt(ID);
+//    }
+//    public Movie (Parcel parcel)
+//    {
+//        Name = parcel.readString();
+//        posterPath = parcel.readString();
+//        Title = parcel.readString();
+//        backdrop_path = parcel.readString();
+//        OverView = parcel.readString();
+//        vote_average = parcel.readString();
+//        Date = parcel.readString();
+//        ID = parcel.readInt();
+//    }
+//
 }
 
 

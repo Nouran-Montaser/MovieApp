@@ -39,7 +39,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.myHolder> {
         final Movie movie=MovieList.get(position);
         Log.i("Adapter",movie.getTitle());
         holder.movieName.setText(MovieList.get(position).getTitle());
-        Picasso.with(context).load(MovieList.get(position).getBaseImageUrl()+MovieList.get(position).getPosterPath()).into(holder.moviePoster);
+        Picasso.with(context).load(MovieList.get(position).getBaseImageUrl()+MovieList.get(position).getPosterPath()).placeholder(R.drawable.placeholder).error(R.drawable.error).into(holder.moviePoster);
         holder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -7,14 +7,14 @@
         android:orderInCategory="1"
         android:id="@+id/Top_Rated"
         android:visible="true"
-        android:title="Top Rated" />
+        android:title="@string/top_rated" />
 
     <item
         android:orderInCategory="2"
         android:id="@+id/Most_Popular"
         app:actionViewClass="android.support.v7.widget.SearchView"
         android:visible="true"
-        android:title="Most Popular" />
+        android:title="@string/most_popular" />
 
 
 </menu>
