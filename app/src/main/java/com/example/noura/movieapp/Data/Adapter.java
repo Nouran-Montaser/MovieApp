@@ -1,7 +1,10 @@
-package com.example.noura.movieapp;
+package com.example.noura.movieapp.Data;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,41 +13,46 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.example.noura.movieapp.DetailActivity;
+import com.example.noura.movieapp.Movie;
+import com.example.noura.movieapp.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.myHolder> {
+public class Adapter extends RecyclerView.Adapter<Adapter.Holder> {
 
     private Context context;
-    private ArrayList<Movie> MovieList;
+    private List<Movies> movies;
 
 
-    public MovieAdapter(Context context, ArrayList<Movie> details) {
+    public Adapter(Context context, List<Movies> details) {
         this.context = context;
-        this.MovieList = details;
+        movies= details;
     }
 
     @Override
-    public myHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.single_movie,parent,false);
-        return new myHolder(view);
+        return new Holder( view);
     }
 
 
     @Override
-    public void onBindViewHolder(final myHolder holder, final int position){
-        final Movie movie=MovieList.get(position);
-        holder.movieName.setText(MovieList.get(position).getTitle());
-        Picasso.with(context).load(MovieList.get(position).getBaseImageUrl()+MovieList.get(position).getPosterPath()).placeholder(R.drawable.placeholder).error(R.drawable.error).into(holder.moviePoster);
+    public void onBindViewHolder(final Holder holder, final int position){
+
+        holder.movieName.setText(movies.get(position).getTitle());
+        Picasso.with(context).load(Movie.baseImageUrl+movies.get(position).getPosterPath()).placeholder(R.drawable.placeholder).error(R.drawable.error).into(holder.moviePoster);
+
+
         holder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent detailIntent = new Intent(context , DetailActivity.class);
-                detailIntent.putExtra("ClickedItemID",MovieList.get(position).getID());
-                detailIntent.putExtra("ClickedItemName",MovieList.get(position).getTitle());
+                detailIntent.putExtra("ClickedItemID",movies.get(position).getId());
+                detailIntent.putExtra("ClickedItemName",movies.get(position).getTitle());
                 context.startActivity(detailIntent);
             }
         });
@@ -52,22 +60,20 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.myHolder> {
 
     @Override
     public int getItemCount() {
-        return MovieList.size();
+        return movies.size();
     }
 
-    public static class myHolder extends RecyclerView.ViewHolder{
+    public static class Holder extends RecyclerView.ViewHolder{
 
         ImageView moviePoster;
         TextView movieName;
         LinearLayout linearLayout;
-        ImageView favImg;
 
-        public myHolder(View itemView) {
+        public Holder(View itemView) {
             super(itemView);
             moviePoster = itemView.findViewById(R.id.SingleMovie_img);
             movieName = itemView.findViewById(R.id.SingleMovie_nametxt);
             linearLayout = itemView.findViewById(R.id.container);
-            favImg = itemView.findViewById(R.id.favorite);
         }
     }
 }

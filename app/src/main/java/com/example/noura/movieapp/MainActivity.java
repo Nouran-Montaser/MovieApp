@@ -1,9 +1,16 @@
 package com.example.noura.movieapp;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -13,8 +20,15 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.noura.movieapp.Data.Adapter;
+import com.example.noura.movieapp.Data.AppExecutors;
+import com.example.noura.movieapp.Data.Movies;
+import com.example.noura.movieapp.Data.MyDataBase;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,6 +40,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,19 +48,26 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.recycler_view) RecyclerView movieRecyclerView;
+    @BindView(R.id.eptyView)
+    ImageView emptyView;
+    @BindView(R.id.emptyText)
+    TextView emptyTxt;
 
     private static final String MY_PREFS_NAME = "MyPrefsFile";
     private static final int SETTINGS_RESULT = 9999;
     private GridLayoutManager gridLayoutManager;
     private ArrayList<Movie> details;
     private MovieAdapter movieAdapter;
-//    private RecyclerView movieRecyclerView;
     private int NUM_OF_COLUMNS = 2;
     private final String BASE_URL = "https://api.themoviedb.org/3/";
     private final String TAG = MainActivity.class.getName();
     private SharedPreferences sharedPrefs;
     private SharedPreferences.Editor sharedPrefsEditor;
     private ProgressBar progressBar;
+    private MyDataBase mDb;
+    private Adapter adapter;
+    private boolean connected = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,8 +77,27 @@ public class MainActivity extends AppCompatActivity {
 
         initializer();
 
-        setUpPref();
+        checkInternetConnection();
 
+        setUpPref();
+    }
+
+    public void checkInternetConnection()
+    {
+        emptyView.setVisibility(View.GONE);
+        emptyTxt.setVisibility(View.GONE);
+        movieRecyclerView.setVisibility(View.VISIBLE);
+
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED || connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            connected = true;
+        } else {
+            connected = false;
+            mDb = MyDataBase.getAppDatabase(getApplicationContext());
+            movieRecyclerView.setVisibility(View.GONE);
+            emptyView.setVisibility(View.VISIBLE);
+            emptyTxt.setVisibility(View.VISIBLE);
+        }
     }
 
     public  void setUpPref()
@@ -81,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public class MovieAppTask extends AsyncTask<String, Integer , ArrayList<Movie>> {
+    public class MovieAppTask extends AsyncTask<String, Integer , List<Movie>> {
 
         @Override
         protected void onPreExecute() {
@@ -91,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected ArrayList<Movie> doInBackground(String... urls) {
+        protected List<Movie> doInBackground(String... urls) {
             String link = urls[0];
             String result = null;
             StringBuilder stringBuilder = new StringBuilder();
@@ -106,10 +147,8 @@ public class MainActivity extends AppCompatActivity {
                     result = reader.readLine();
                 }
 
-
                 JSONObject jsonObj = new JSONObject(stringBuilder.toString());
                 JSONArray all = jsonObj.getJSONArray("results");
-
 
                 String name, poster;
                 int ID;
@@ -135,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(ArrayList<Movie> movies) {
+        protected void onPostExecute(List<Movie> movies) {
             super.onPostExecute(movies);
             if (details != null) {
                 movieAdapter = new MovieAdapter(MainActivity.this, details);
@@ -158,6 +197,13 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.Top_Rated: {
+                checkInternetConnection();
+                if(connected == false)
+                {
+                    emptyView.setVisibility(View.VISIBLE);
+                    emptyTxt.setVisibility(View.VISIBLE);
+                    emptyTxt.setText("There is no Internet Connection");
+                }
                 sharedPrefsEditor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
                 sharedPrefsEditor.putString("SortBY", getString(R.string.top_rated));
                 sharedPrefsEditor.apply();
@@ -165,20 +211,44 @@ public class MainActivity extends AppCompatActivity {
                 break;
             }
             case R.id.Most_Popular: {
+                checkInternetConnection();
+                if(connected == false)
+                {
+                    emptyView.setVisibility(View.VISIBLE);
+                    emptyTxt.setVisibility(View.VISIBLE);
+                    emptyTxt.setText("There is no Internet Connection");
+                }
                 sharedPrefsEditor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
                 sharedPrefsEditor.putString("SortBY", getString(R.string.most_popular));
                 sharedPrefsEditor.apply();
                 setUpPref();
                 break;
             }
+            case R.id.favorite: {
+
+                //live data run out of the main thread by default so we don't need the executor
+//                LiveData<List<Movies>> mList = mDb.MovieDao().getAll();
+                MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+                viewModel.getMovies().observe(this, new Observer<List<Movies>>() {
+                    @Override
+                    public void onChanged(@Nullable List<Movies> m) {
+                        if(m.isEmpty())
+                        {
+                            emptyView.setVisibility(View.VISIBLE);
+                            emptyTxt.setVisibility(View.VISIBLE);
+                            emptyTxt.setText("There is no favorite movies yet");
+                        }        // update the UI in the On changed method of the observer which run by dafult in the main thread
+                        Log.d(TAG,"Reciving DataBase update from LiveData"+m);
+                        movieRecyclerView.setAdapter(new Adapter(MainActivity.this, m));
+                    }
+                });
+
+                break;
+            }
             default:
                 break;
         }
-
         return super.onOptionsItemSelected(item);
-
-
     }
-
 }
 

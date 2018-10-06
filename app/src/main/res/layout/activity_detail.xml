@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#FAFAFA">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -19,106 +20,110 @@
             android:background="#000000">
 
             <ImageView
+                android:id="@+id/BackImage"
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
-                android:id="@+id/BackImage"
-                android:scaleType="fitXY"/>
+                android:scaleType="fitXY" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
+
                 <ImageView
+                    android:id="@+id/FrontImage"
+                    android:layout_width="150dp"
+                    android:layout_height="200dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="3dp"
                     android:layout_marginTop="50dp"
-                    android:layout_width="150dp"
-                    android:layout_height="200dp"
-                    android:id="@+id/FrontImage"
-                    android:scaleType="fitCenter"
-                    android:background="@drawable/black_rectangle"/>
+                    android:scaleType="fitCenter" />
 
                 <TextView
-                    android:layout_toRightOf="@+id/FrontImage"
+                    android:id="@+id/OriginalTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/OriginalTitle"
-                    android:textColor="#fff"
-                    android:textSize="20sp"
+                    android:layout_marginBottom="10dp"
                     android:layout_marginLeft="5dp"
                     android:layout_marginTop="185dp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="10dp"/>
+                    android:layout_toRightOf="@+id/FrontImage"
+                    android:textColor="#fff"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
                 <TextView
 
-                    android:layout_alignParentBottom="true"
+                    android:id="@+id/ReleaseDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:id="@+id/ReleaseDate"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="215dp"
                     android:textColor="#fff"
                     android:textSize="15sp"
-                    android:layout_marginTop="215dp"
-                    android:layout_marginRight="5dp"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
 
             </RelativeLayout>
         </FrameLayout>
 
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:orientation="horizontal">
 
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <ImageView
+                android:id="@+id/favorite"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_margin="15dp">
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginTop="8dp"
-                    android:src="@drawable/ic_star_black_24dp"/>
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="8dp"
+                android:src="@drawable/ic_star_border_black_24dp" />
 
-                <TextView
-                    android:textColor="#000051"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:layout_marginTop="10dp"
-                    android:fontFamily="sans-serif-condensed"
-                    android:id="@+id/UserRate"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/UserRate"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_margin="10dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="OverView :"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:textColor="#000065"
-                    android:layout_marginRight="5dp"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="#000070"
-                    android:fontFamily="sans-serif-condensed"
-                    android:id="@+id/OverView"/>
-            </LinearLayout>
+                android:layout_marginTop="20dp"
+                android:fontFamily="sans-serif-condensed"
+                android:textColor="#000051"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                tools:text="9.5/10" />
+        </LinearLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1.5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="#000" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:text="OverView :"
+                android:textColor="#000065"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/OverView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-condensed"
+                android:textColor="#000070"
+                android:textSize="16sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <ProgressBar
@@ -128,11 +133,74 @@
             android:layout_alignParentTop="true"
             android:layout_gravity="center"
             android:maxHeight="100dip"
+            android:maxWidth="10dip"
             android:minHeight="100dip"
-            android:minWidth="10dip"
-            android:maxWidth="10dip"/>
+            android:minWidth="10dip" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1.5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="#000" />
+
+        <LinearLayout
+            android:id="@+id/TrailersContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:fontFamily="serif"
+                android:text="Trailers:"
+                android:textColor="#000065"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/TrailersRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="4dp" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1.5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="#000" />
+
+        <LinearLayout
+            android:id="@+id/ReviewsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:fontFamily="serif"
+                android:text="Reviews :"
+                android:textColor="#000065"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/ReviwsRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="4dp" />
+
+        </LinearLayout>
 
     </LinearLayout>
+
 
 </ScrollView>

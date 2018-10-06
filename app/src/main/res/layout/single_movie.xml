@@ -1,32 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:layout_margin="5dp"
-    android:id="@+id/container">
+    android:layout_marginBottom="7dp"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp"
+    android:layout_marginTop="7dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="8dp">
 
 
-    <ImageView
-        android:id="@+id/SingleMovie_img"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:scaleType="fitXY"
-        android:layout_gravity="center_horizontal"
-        android:src="@drawable/ic_launcher_background" />
-
-    <TextView
-        android:id="@+id/SingleMovie_nametxt"
+    <LinearLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="Lala Land"
-        android:textAlignment="center"
-        android:textColor="@android:color/black"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+        android:orientation="vertical">
 
-</LinearLayout>
+        <ImageView
+            android:id="@+id/SingleMovie_img"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/placeholder" />
+
+        <TextView
+            android:id="@+id/SingleMovie_nametxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:layout_gravity="center"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:fontFamily="casual"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
+            tools:text="Lala Land" />
+    </LinearLayout>
+</android.support.v7.widget.CardView>
+
 
 

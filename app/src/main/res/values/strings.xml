@@ -12,5 +12,6 @@
 
     <string name="pref_Sort_Values">pref_Sort_Values</string>
     <string name="pref_Sort_Labels">pref_Sort_Labels</string>
+    <string name="favorit">Favorit</string>
 
 </resources>

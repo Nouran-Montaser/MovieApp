@@ -4,7 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Movie
-//        implements Parcelable
 {
 
     public static final String baseImageUrl = "http://image.tmdb.org/t/p/w185/";
