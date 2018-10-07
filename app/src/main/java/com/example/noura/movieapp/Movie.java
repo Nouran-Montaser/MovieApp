@@ -3,8 +3,7 @@ package com.example.noura.movieapp;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Movie
-{
+public class Movie implements Parcelable {
 
     public static final String baseImageUrl = "http://image.tmdb.org/t/p/w185/";
 
@@ -122,6 +121,46 @@ public class Movie
 //        ID = parcel.readInt();
 //    }
 //
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.ID);
+        dest.writeString(this.Name);
+        dest.writeString(this.posterPath);
+        dest.writeString(this.Title);
+        dest.writeString(this.backdrop_path);
+        dest.writeString(this.OverView);
+        dest.writeString(this.vote_average);
+        dest.writeString(this.Date);
+    }
+
+    protected Movie(Parcel in) {
+        this.ID = in.readInt();
+        this.Name = in.readString();
+        this.posterPath = in.readString();
+        this.Title = in.readString();
+        this.backdrop_path = in.readString();
+        this.OverView = in.readString();
+        this.vote_average = in.readString();
+        this.Date = in.readString();
+    }
+
+    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
+        @Override
+        public Movie createFromParcel(Parcel source) {
+            return new Movie(source);
+        }
+
+        @Override
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
 }
 
 

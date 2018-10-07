@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.noura.movieapp.Data.Movies;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -43,8 +44,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.myHolder> {
             @Override
             public void onClick(View v) {
                 Intent detailIntent = new Intent(context , DetailActivity.class);
-                detailIntent.putExtra("ClickedItemID",MovieList.get(position).getID());
-                detailIntent.putExtra("ClickedItemName",MovieList.get(position).getTitle());
+
+                detailIntent.putExtra("ClickedItemID",new Movies(MovieList.get(position).getID(),MovieList.get(position).getName(),MovieList.get(position).backdrop_path,MovieList.get(position).getTitle(),MovieList.get(position).getBackdrop_path(),MovieList.get(position).getOverView(),MovieList.get(position).getVote_average(),MovieList.get(position).getDate()));
                 context.startActivity(detailIntent);
             }
         });

@@ -5,13 +5,15 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.example.noura.movieapp.Trailer;
 
 import java.util.ArrayList;
 
 @Entity(tableName = "Movies")
-public class Movies {
+public class Movies implements Parcelable {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
@@ -29,6 +31,8 @@ public class Movies {
     private String vote_average;
 
     private String Date;
+
+    public static final String baseImageUrl = "http://image.tmdb.org/t/p/w185/";
 
 
     @Ignore
@@ -119,6 +123,10 @@ public class Movies {
         Date = date;
     }
 
+    public static String getBaseImageUrl() {
+        return baseImageUrl;
+    }
+
     @Override
     public String toString() {
         return "Movies{" +
@@ -132,4 +140,44 @@ public class Movies {
                 ", Date='" + Date + '\'' +
                 '}';
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.id);
+        dest.writeString(this.name);
+        dest.writeString(this.posterPath);
+        dest.writeString(this.Title);
+        dest.writeString(this.backdrop_path);
+        dest.writeString(this.OverView);
+        dest.writeString(this.vote_average);
+        dest.writeString(this.Date);
+    }
+
+    protected Movies(Parcel in) {
+        this.id = in.readInt();
+        this.name = in.readString();
+        this.posterPath = in.readString();
+        this.Title = in.readString();
+        this.backdrop_path = in.readString();
+        this.OverView = in.readString();
+        this.vote_average = in.readString();
+        this.Date = in.readString();
+    }
+
+    public static final Parcelable.Creator<Movies> CREATOR = new Parcelable.Creator<Movies>() {
+        @Override
+        public Movies createFromParcel(Parcel source) {
+            return new Movies(source);
+        }
+
+        @Override
+        public Movies[] newArray(int size) {
+            return new Movies[size];
+        }
+    };
 }

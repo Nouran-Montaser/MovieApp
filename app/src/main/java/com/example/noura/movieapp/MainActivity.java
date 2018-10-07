@@ -242,7 +242,6 @@ public class MainActivity extends AppCompatActivity {
                         movieRecyclerView.setAdapter(new Adapter(MainActivity.this, m));
                     }
                 });
-
                 break;
             }
             default:

@@ -15,7 +15,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.noura.movieapp.DetailActivity;
-import com.example.noura.movieapp.Movie;
 import com.example.noura.movieapp.R;
 import com.squareup.picasso.Picasso;
 
@@ -44,15 +43,14 @@ public class Adapter extends RecyclerView.Adapter<Adapter.Holder> {
     public void onBindViewHolder(final Holder holder, final int position){
 
         holder.movieName.setText(movies.get(position).getTitle());
-        Picasso.with(context).load(Movie.baseImageUrl+movies.get(position).getPosterPath()).placeholder(R.drawable.placeholder).error(R.drawable.error).into(holder.moviePoster);
+        Picasso.with(context).load(Movies.baseImageUrl+movies.get(position).getPosterPath()).placeholder(R.drawable.placeholder).error(R.drawable.error).into(holder.moviePoster);
 
 
         holder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent detailIntent = new Intent(context , DetailActivity.class);
-                detailIntent.putExtra("ClickedItemID",movies.get(position).getId());
-                detailIntent.putExtra("ClickedItemName",movies.get(position).getTitle());
+                detailIntent.putExtra("ClickedItemID",movies.get(position));
                 context.startActivity(detailIntent);
             }
         });
@@ -61,6 +59,11 @@ public class Adapter extends RecyclerView.Adapter<Adapter.Holder> {
     @Override
     public int getItemCount() {
         return movies.size();
+    }
+
+    public List<Movies> getMovie()
+    {
+        return movies;
     }
 
     public static class Holder extends RecyclerView.ViewHolder{

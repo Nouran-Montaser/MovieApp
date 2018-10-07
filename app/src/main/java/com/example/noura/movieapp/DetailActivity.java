@@ -82,10 +82,11 @@ public class DetailActivity extends AppCompatActivity {
     private ArrayList<Trailer> trailers;
     private TrailerAdapter trailerAdapter;
     private MyDataBase mDb;
-    public int item;
     private final String BASE_URL = "https://api.themoviedb.org/3/";
     private final String TAG = MainActivity.class.getName();
-    public String name, Date = null, vote_average = null, OverView = null, Title = null, poster_path = null, backdrop_path = null;
+    public String  Date = null, vote_average = null, OverView = null, Title = null, poster_path = null, backdrop_path = null;
+    private boolean ISFAVORITE = false;
+    private Movies mov;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,10 +98,9 @@ public class DetailActivity extends AppCompatActivity {
         initializer();
 
         Intent intent = getIntent();
-        item = intent.getIntExtra("ClickedItemID", 0);
-        name = intent.getStringExtra("ClickedItemName");
+        mov = intent.getParcelableExtra("ClickedItemID");
 
-        setTitle(name);
+        setTitle(mov.getTitle());
 
         mDb = MyDataBase.getAppDatabase(getApplicationContext());
 
@@ -109,74 +109,45 @@ public class DetailActivity extends AppCompatActivity {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED || connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
             connected = true;
-            new DetailActivity.MovieDetail().execute(BASE_URL + "movie/" + item + "?api_key=214cc6f08673d0af40d2a203b2c32143&language=en-US");
-            new DetailActivity.MovieTrailer().execute(BASE_URL + "movie/" + item + "/videos?api_key=214cc6f08673d0af40d2a203b2c32143&language=en-US");
-            new DetailActivity.MovieReview().execute(BASE_URL + "movie/" + item + "/reviews?api_key=214cc6f08673d0af40d2a203b2c32143&language=en-US");
-
-        } else {
-            connected = false;
-
-            LoadMovieViewModelFactory factory = new LoadMovieViewModelFactory(mDb , item);
-            final LoadMovieViewModel viewModel = ViewModelProviders.of(this , factory).get(LoadMovieViewModel.class);
-            viewModel.getMoviesLiveData().observe(this, new Observer<Movies>() {
-                @Override
-                public void onChanged(@Nullable Movies m) {
-
-                    rContainer.setVisibility(View.GONE);
-                    tContainer.setVisibility(View.GONE);
-
-                            if (m != null) {
-                                favImg.setImageResource(R.drawable.ic_star_black_24dp);
-                                progressBar.setVisibility(View.GONE);
-                                originalTitle.setText(m.getTitle());
-                                releaseDate.setText(m.getDate());
-                                rate.setText(m.getVote_average() + "/10");
-                                overView.setText(m.getOverView());
-                                Picasso.with(DetailActivity.this).load(Movie.baseImageUrl + m.getPosterPath()).into(posterPath);
-                                Picasso.with(DetailActivity.this).load(Movie.baseImageUrl + m.getBackdrop_path()).into(backImg);
-
-                            }}});
-
-//            AppExecutors.getsInstance().getDiskIO().execute(new Runnable() {
-//                @Override
-//                public void run() {
-//                    final Movies m = mDb.MovieDao().loadMovieById(item);
-//
-//                    rContainer.setVisibility(View.GONE);
-//                    tContainer.setVisibility(View.GONE);
-//
-//                    runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            if (m != null) {
-//                                progressBar.setVisibility(View.GONE);
-//                                originalTitle.setText(m.getTitle());
-//                                releaseDate.setText(m.getDate());
-//                                rate.setText(m.getVote_average() + "/10");
-//                                overView.setText(m.getOverView());
-//                                Picasso.with(DetailActivity.this).load(Movie.baseImageUrl + m.getPosterPath()).into(posterPath);
-//                                Picasso.with(DetailActivity.this).load(Movie.baseImageUrl + m.getBackdrop_path()).into(backImg);
-//                            }
-//                        }
-//                    });
-//                }
-//            });
+            new DetailActivity.MovieDetail().execute(BASE_URL + "movie/" + mov.getId() + "?api_key=214cc6f08673d0af40d2a203b2c32143&language=en-US");
+            new DetailActivity.MovieTrailer().execute(BASE_URL + "movie/" + mov.getId() + "/videos?api_key=214cc6f08673d0af40d2a203b2c32143&language=en-US");
+            new DetailActivity.MovieReview().execute(BASE_URL + "movie/" + mov.getId() + "/reviews?api_key=214cc6f08673d0af40d2a203b2c32143&language=en-US");
         }
-
+        else
+        {
+            rContainer.setVisibility(View.GONE);
+            tContainer.setVisibility(View.GONE);
+        }
+            loadData();
 
 
         favImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Movies movies = new Movies(item ,name, poster_path, Title, backdrop_path, OverView, vote_average, Date /*, trailers*/);
-
-                favImg.setImageResource(R.drawable.ic_star_black_24dp);
-
+//                loadData();
+                final Movies movies = new Movies(mov.getId(), mov.getName(), poster_path, Title, backdrop_path, OverView, vote_average, Date);
                 AppExecutors.getsInstance().getDiskIO().execute(new Runnable() {
                     @Override
                     public void run() {
-                        mDb.MovieDao().insertMovie(movies);
-                        finish();
+                        if (ISFAVORITE == true)
+                        {
+                            mDb.MovieDao().deleteMovie(mov);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    favImg.setImageResource(R.drawable.ic_star_border_black_24dp);
+                                }
+                            });
+                        }
+                        else {
+                            mDb.MovieDao().insertMovie(movies);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    favImg.setImageResource(R.drawable.ic_star_black_24dp);
+                                }
+                            });
+                        }
                     }
                 });
             }
@@ -185,6 +156,26 @@ public class DetailActivity extends AppCompatActivity {
 
     }
 
+
+    private void loadData()
+    {
+        LoadMovieViewModelFactory factory = new LoadMovieViewModelFactory(mDb , mov.getId());
+        final LoadMovieViewModel viewModel = ViewModelProviders.of(this , factory).get(LoadMovieViewModel.class);
+        viewModel.getMoviesLiveData().observe(this, new Observer<Movies>() {
+            @Override
+            public void onChanged(@Nullable Movies m) {
+                if (m != null) {
+                    ISFAVORITE = true;
+                    favImg.setImageResource(R.drawable.ic_star_black_24dp);
+                    progressBar.setVisibility(View.GONE);
+                    originalTitle.setText(m.getTitle());
+                    releaseDate.setText(m.getDate());
+                    rate.setText(m.getVote_average() + "/10");
+                    overView.setText(m.getOverView());
+                    Picasso.with(DetailActivity.this).load(Movie.baseImageUrl + m.getPosterPath()).into(posterPath);
+                    Picasso.with(DetailActivity.this).load(Movie.baseImageUrl + m.getBackdrop_path()).into(backImg);
+                }}});
+    }
 
     private void initializer() {
         trailers = new ArrayList<>();

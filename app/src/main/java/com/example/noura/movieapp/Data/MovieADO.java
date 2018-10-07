@@ -24,5 +24,7 @@ public interface MovieADO {
     @Query("SELECT * FROM Movies WHERE id = :id")
     LiveData<Movies> loadMovieById (int id);
 
+    @Delete
+    void deleteMovie(Movies movies);
 
 }
